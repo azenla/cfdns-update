@@ -1,0 +1,8 @@
+[zone]
+domain = "my.domain"
+identifier = "SOME_ID"
+
+[[zone.records]]
+name = "my.domain"
+kind = "A"
+value = "192.168.1.1"
