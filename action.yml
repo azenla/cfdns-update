@@ -26,4 +26,4 @@ runs:
       GITHUB_ACTION_PATH: "${{ github.action_path }}"
       CF_CHANGE_CONTROL: "${{ inputs.change-control }}"
       CF_API_TOKEN: "${{ inputs.api-token }}"
-      CF_ZONE_CONFIG: "${{ inputs.zone-config }}"
+      CF_ZONE_CONFIG: "${{ github.workspace }}/${{ inputs.zone-config }}"
