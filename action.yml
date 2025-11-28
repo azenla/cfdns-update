@@ -14,14 +14,14 @@ inputs:
     required: true
     default: 'zone.toml'
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
   - name: build cfdns-update
     shell: bash
-    run: 'cd "$GITHUB_ACTION_PATH}" && cargo build --release'
+    run: 'cd "${GITHUB_ACTION_PATH}" && cargo build --release'
   - name: run cfdns-update
     shell: bash
-    run: 'cd "$GITHUB_ACTION_PATH}" && ./target/release/cfdns-update'
+    run: 'cd "${GITHUB_ACTION_PATH}" && ./target/release/cfdns-update'
     env:
       GITHUB_ACTION_PATH: "${{ github.action_path }}"
       CF_CHANGE_CONTROL: "${{ inputs.change-control }}"
