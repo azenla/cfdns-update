@@ -1,5 +1,5 @@
 [package]
-name = "dns-update"
+name = "cfdns-update"
 version = "0.0.1"
 publish = false
 edition = "2024"
@@ -12,3 +12,7 @@ features = ["blocking", "default-tls"]
 [dependencies]
 serde = "1.0.228"
 toml = "0.9.8"
+
+[[bin]]
+name = "cfdns-update"
+path = "src/main.rs"

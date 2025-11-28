@@ -1,3 +1,3 @@
 # cfdns-update
 
-GitOps Cloudflare DNS
+Extremely simple GitOps for Cloudflare DNS.

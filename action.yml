@@ -1,0 +1,28 @@
+name: 'cfdns-update'
+description: 'Update Cloudflare DNS'
+inputs:
+  api-token:
+    description: 'Cloudflare API token'
+    required: true
+    default: ''
+  change-control:
+    description: 'Change control mode: dummy/check/commit'
+    required: true
+    default: 'check'
+  zone-config:
+    description: 'Path to zone.toml config file'
+    required: true
+    default: 'zone.toml'
+runs:
+  using: "composite"
+  steps:
+  - name: build cfdns-update
+    shell: bash
+    run: 'cd "$GITHUB_ACTION_PATH}" && cargo build --release'
+  - name: run cfdns-update
+    shell: bash
+    run: 'cd "$GITHUB_ACTION_PATH}" && ./target/release/cfdns-update'
+    env:
+      GITHUB_ACTION_PATH: "${{ github.action_path }}"
+      CF_CHANGE_CONTROL: "${{ inputs.change-control }}"
+      CF_API_TOKEN: "${{ inputs.api-token }}"

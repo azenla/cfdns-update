@@ -43,44 +43,47 @@ pub struct ZoneRecordConfiguration {
 }
 
 impl ZoneRecordConfiguration {
+    pub fn create_dns_content(&self) -> DnsContent {
+        match self.kind {
+            ZoneRecordKind::A => DnsContent::A {
+                content: self.value.parse().unwrap(),
+            },
+
+            ZoneRecordKind::AAAA => DnsContent::AAAA {
+                content: self.value.parse().unwrap(),
+            },
+
+            ZoneRecordKind::CNAME => DnsContent::CNAME {
+                content: self.value.clone(),
+            },
+
+            ZoneRecordKind::MX => DnsContent::MX {
+                content: self.value.parse().unwrap(),
+                priority: self.priority.unwrap(),
+            },
+
+            ZoneRecordKind::NS => DnsContent::NS {
+                content: self.value.clone(),
+            },
+
+            ZoneRecordKind::SRV => DnsContent::SRV {
+                content: self.value.parse().unwrap(),
+            },
+        }
+    }
+
     pub fn create_dns_params(&self) -> CreateDnsRecordParams<'_> {
         CreateDnsRecordParams {
             ttl: self.ttl,
             priority: self.priority,
             proxied: self.proxied,
             name: &self.name,
-            content: match self.kind {
-                ZoneRecordKind::A => DnsContent::A {
-                    content: self.value.parse().unwrap(),
-                },
-
-                ZoneRecordKind::AAAA => DnsContent::AAAA {
-                    content: self.value.parse().unwrap(),
-                },
-
-                ZoneRecordKind::CNAME => DnsContent::CNAME {
-                    content: self.value.clone(),
-                },
-
-                ZoneRecordKind::MX => DnsContent::MX {
-                    content: self.value.parse().unwrap(),
-                    priority: self.priority.unwrap(),
-                },
-
-                ZoneRecordKind::NS => DnsContent::NS {
-                    content: self.value.clone(),
-                },
-
-                ZoneRecordKind::SRV => DnsContent::SRV {
-                    content: self.value.parse().unwrap(),
-                },
-            },
+            content: self.create_dns_content(),
         }
     }
 }
 
-pub fn read() -> Configuration {
-    let config = std::env::args().nth(1).expect("no config file specified");
-    let config = fs::read(&config).expect("failed to read config file");
+pub fn read(path: String) -> Configuration {
+    let config = fs::read(&path).expect("failed to read config file");
     toml::from_slice(&config).expect("failed to parse config file")
 }

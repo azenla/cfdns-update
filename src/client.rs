@@ -9,8 +9,7 @@ use cloudflare::framework::client::blocking_api::HttpApiClient;
 
 const DNS_RECORD_PAGE_SIZE: u32 = 100;
 
-pub fn create() -> HttpApiClient {
-    let token = std::env::var("CF_TOKEN").expect("CF_TOKEN not set");
+pub fn create(token: String) -> HttpApiClient {
     let credentials = Credentials::UserAuthToken { token };
     HttpApiClient::new(
         credentials,
