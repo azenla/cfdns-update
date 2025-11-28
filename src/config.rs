@@ -24,6 +24,8 @@ pub enum ZoneRecordKind {
     AAAA,
     #[serde(rename = "CNAME")]
     CNAME,
+    #[serde(rename = "TXT")]
+    TXT,
     #[serde(rename = "MX")]
     MX,
     #[serde(rename = "NS")]
@@ -54,6 +56,10 @@ impl ZoneRecordConfiguration {
             },
 
             ZoneRecordKind::CNAME => DnsContent::CNAME {
+                content: self.value.clone(),
+            },
+
+            ZoneRecordKind::TXT => DnsContent::TXT {
                 content: self.value.clone(),
             },
 
