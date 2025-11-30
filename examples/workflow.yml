@@ -1,0 +1,24 @@
+# example cfdns-update workflow
+# make sure to use pinact to pin all of your actions!
+name: update
+on:
+  push:
+    branches:
+    - main
+permissions:
+  contents: read # Needed to checkout the repository.
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+    - name: update dns
+      uses: azenla/cfdns-update@main
+      with:
+        api-token: "${{ secrets.CF_API_TOKEN }}"
+        change-control: "commit"
+        zone-config: "dns.toml"
