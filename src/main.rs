@@ -36,7 +36,7 @@ fn main() {
         panic!("acquired zone details do not match configuration domain");
     }
 
-    let current_records = if dummy {
+    let active = if dummy {
         vec![]
     } else {
         client::dns_records(&client, &config.zone.identifier)
@@ -49,7 +49,7 @@ fn main() {
         .map(|record| record.create_dns_params())
         .collect();
 
-    let delta = delta::delta_dns_records(&wanted, &current_records);
+    let delta = delta::delta_dns_records(&config, &wanted, &active);
 
     for add in &delta.added {
         println!(

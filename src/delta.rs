@@ -1,8 +1,26 @@
+use crate::config::Configuration;
 use cloudflare::endpoints::dns::dns::{CreateDnsRecordParams, DnsContent, DnsRecord};
 
 pub struct DnsRecordDelta<'record> {
     pub deleted: Vec<&'record DnsRecord>,
     pub added: Vec<&'record CreateDnsRecordParams<'record>>,
+}
+
+pub fn is_cloudflare_email(domain: &str, record: &DnsRecord) -> bool {
+    match &record.content {
+        DnsContent::MX {
+            content,
+            priority: _,
+        } => content.contains("mx.cloudflare.net"),
+
+        DnsContent::TXT { content } => {
+            (record.name.starts_with("cf")
+                && record.name.ends_with(&format!("._domainkey.{}", domain,)))
+                || (record.name == domain && content.contains("_spf.mx.cloudflare.net"))
+        }
+
+        _ => false,
+    }
 }
 
 fn is_record_match(want: &CreateDnsRecordParams, have: &DnsRecord) -> bool {
@@ -39,13 +57,18 @@ fn is_record_match(want: &CreateDnsRecordParams, have: &DnsRecord) -> bool {
 }
 
 pub fn delta_dns_records<'record>(
+    config: &Configuration,
     want: &'record [CreateDnsRecordParams],
     have: &'record [DnsRecord],
 ) -> DnsRecordDelta<'record> {
-    let deleted: Vec<&DnsRecord> = have
+    let mut deleted: Vec<&DnsRecord> = have
         .iter()
         .filter(|exists| !want.iter().any(|want| is_record_match(want, exists)))
         .collect();
+
+    if config.zone.email.cloudflare {
+        deleted.retain(|record| !is_cloudflare_email(config.zone.domain.as_str(), record));
+    }
 
     let added: Vec<&CreateDnsRecordParams> = want
         .iter()

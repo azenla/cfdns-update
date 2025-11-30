@@ -13,7 +13,15 @@ pub struct Configuration {
 pub struct ZoneConfiguration {
     pub domain: String,
     pub identifier: String,
+    #[serde(default)]
+    pub email: EmailConfiguration,
     pub records: Vec<ZoneRecordConfiguration>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct EmailConfiguration {
+    #[serde(default)]
+    pub cloudflare: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -2,6 +2,10 @@
 domain = "my.domain"
 identifier = "SOME_ID"
 
+[zone.email]
+# Enable this flag to use Cloudflare Email and retain the records without manual configuration.
+cloudflare = false
+
 [[zone.records]]
 name = "my.domain"
 kind = "A"
